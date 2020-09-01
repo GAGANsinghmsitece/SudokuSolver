@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Sudoku Generator</title>
+</head>
+<body>
+<style type="text/css">
+	.container{
+		position: fixed;
+		top:0%;
+		left:0%;
+		width:100%;
+		height: 100%;
+		background-color: #ffd5c2;
+	}
+	.sudoku_body{
+		position: fixed;
+		top:10%;
+		left:25%;
+		transition:1s;
+		width:0px;
+		height: 0px;
+	}
+	.sudoku_row{
+		display: flex;
+		width:100%;
+		height: 183px;
+	}
+	.block{
+		width:183px;
+		height: 183px;
+		transition: 1s;
+		opacity: 0;
+	}
+	.block_row{
+		display: flex;
+		width:100%;
+		height: 61px;
+		opacity: 0;
+		transition: 1s;
+	}
+	.item{
+		width:61px;
+		height: 100%;
+		font-family: "-apple-system",BlinkMacSystemFont,Roboto,helvetica,Arial,나눔고딕,sans-serif;color: #fafafa;
+		font-weight: bolder;
+		color:#588b8b;
+		text-align: center;
+		margin:auto;
+		line-height: 61px;
+		font-size:38px;
+	}
+	.filled{
+		color:#c8553d; 
+	}
+	.current{
+		background-color: #f28f3b;
+		color:#ffffff;
+	}
+	.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #588b8b;
+  border-bottom-color: #FF3D00;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.pos{
+	position: absolute;
+	top:50%;
+	width:100%;
+	margin:-48px 0px;
+	text-align: center;
+}
+.message{
+	width:100%;
+	font-family: "-apple-system",BlinkMacSystemFont,Roboto,helvetica,Arial,나눔고딕,sans-serif;
+	color: #588b8b;
+	font-weight: bolder;
+	height: auto;
+	text-align: center;
+} 
+.preloaderbutton,.solvesudoku{
+	opacity: 0;
+	outline: 0px;
+	width:110px;
+	height: 40px;
+	margin-top: 15px;
+	background-color:#588b8b;
+	color:#ffffff;
+	border:0px;
+	font-family: "-apple-system",BlinkMacSystemFont,Roboto,helvetica,Arial,나눔고딕,sans-serif;
+	font-weight: bolder;
+	border-radius: 25px;
+	transition: 1s;
+}
+.solvesudoku{
+	opacity: 1;
+}
+.Generatesudoku{
+	opacity: 1;
+	outline: 0px;
+	width:250px;
+	height: 40px;
+	margin-top: 15px;
+	border:0px;
+	font-family: "-apple-system",BlinkMacSystemFont,Roboto,helvetica,Arial,나눔고딕,sans-serif;
+	font-weight: bolder;
+	border-radius: 25px;
+	transition: 1s;
+	background-color: #f28f3b;
+	color:#ffffff;
+}
+.secondary{
+	position: fixed;
+	left:75%;
+	width:25%;
+	top:0%;
+	height: 100%;
+	text-align: center;
+}
+.header{
+	margin-top: 20px;
+	width:100%;
+	height: 50px;
+	color:#588b8b;
+	margin-top: 10px;
+	font-size:20px;
+	font-family: "-apple-system",BlinkMacSystemFont,Roboto,helvetica,Arial,나눔고딕,sans-serif;
+}
+.info{
+	position: absolute;bottom:0px;
+	width:100%;
+	font-family: "-apple-system",BlinkMacSystemFont,Roboto,helvetica,Arial,나눔고딕,sans-serif;
+	color:#588b8b;
+	margin-bottom: 20px;
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7-icons@3.0.1/css/framework7-icons.min.css">
+<div class="container" id="cont1" style="z-index: 2;">
+	<div class="pos">
+		<div class="message"><span class="loader"></span><br/><br/>Getting things ready</div>
+		<button class="preloaderbutton">We're ready</button>
+	</div>
+</div>	
+<div class="container">
+	<div class="sudoku_body">
+		<div class="sudoku_row">
+			<div class="block" style="border-right:2px solid #588b8b;border-bottom:2px solid #588b8b">
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="00" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="01" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="02" class="item"></div>
+				</div>
+				<div class="block_row" style="border-bottom:1px solid #588b8b;">
+					<div id="10" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="11" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="12" class="item"></div>
+				</div>
+				<div class="block_row">
+					<div id="20" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="21" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="22" class="item"></div>
+				</div>
+			</div>
+			<div class="block" style="border-right: 2px solid #588b8b;border-bottom:2px solid #588b8b">
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="03" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="04" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="05" class="item"></div>
+				</div>
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="13" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="14" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="15" class="item"></div>
+				</div>
+				<div class="block_row">
+					<div id="23" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="24" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="25" class="item"></div>
+				</div>
+			</div>
+			<div class="block" style="float: right;border-bottom:2px solid #588b8b">
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="06" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="07" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="08" class="item"></div>
+				</div>
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="16" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="17" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="18" class="item"></div>
+				</div>
+				<div class="block_row">
+					<div id="26" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="27" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="28" class="item"></div>
+				</div>
+			</div>
+		</div>
+		<div class="sudoku_row">
+			<div class="block" style="border-right: 2px solid #588b8b;border-bottom:2px solid #588b8b">
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="30" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="31" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="32" class="item"></div>
+				</div>
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="40" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="41" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="42" class="item"></div>
+				</div>
+				<div class="block_row">
+					<div id="50" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="51" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="52" class="item"></div>
+				</div>
+			</div>
+			<div class="block" style="border-right: 2px solid #588b8b;border-bottom:2px solid #588b8b">
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="33" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="34" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="35" class="item"></div>
+				</div>
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="43" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="44" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="45" class="item"></div>
+				</div>
+				<div class="block_row">
+					<div id="53" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="54" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="55" class="item"></div>
+				</div>
+			</div>
+			<div class="block" style="border-bottom:2px solid #588b8b">
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="36" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="37" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="38" class="item"></div>
+				</div>
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="46" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="47" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="48" class="item"></div>
+				</div>
+				<div class="block_row">
+					<div id="56" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="57" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="58" class="item"></div>
+				</div>
+			</div>
+		</div>
+		<div class="sudoku_row">
+			<div class="block" style="border-right: 2px solid #588b8b">
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="60" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="61" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="62" class="item"></div>
+				</div>
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="70" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="71" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="72" class="item"></div>
+				</div>
+				<div class="block_row">
+					<div id="80" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="81" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="82" class="item"></div>
+				</div>
+			</div>
+			<div class="block" style="border-right: 2px solid #588b8b">
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="63" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="64" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="65" class="item"></div>
+				</div>
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="73" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="74" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="75" class="item"></div>
+				</div>
+				<div class="block_row">
+					<div id="83" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="84" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="85" class="item"></div>
+				</div>
+			</div>
+			<div class="block">
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="66" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="67" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="68" class="item"></div>
+				</div>
+				<div class="block_row" style="border-bottom:1px solid #588b8b">
+					<div id="76" class="item" style="border-right:1px solid #588b8b"></div>
+					<div id="77" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="78" class="item"></div>
+				</div>
+				<div class="block_row">
+					<div id="86" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="87" class="item" style="border-right: 1px solid #588b8b"></div>
+					<div id="88" class="item"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="secondary">
+		<div class="header">Sudoku Visualisation</div>
+		<button class="solvesudoku" onclick="Interface()">solve</button>
+		<button class="Generatesudoku">Generate another problem</button>
+		<div class="info">
+			Developed by Gagan Singh<br/>
+			<a style="color:#588b8b;" target="_blank" href="https://github.com/GAGANsinghmsitece/SudokuSolver">Give it a star on Github <i class="f7-icons">logo_github</i></a>
+		</div>	
+	</div>
+</div>
+<script type="text/javascript">
+var Main={
+	'setup':function(){
+		document.getElementsByClassName('message')[0].style.display="none";
+		document.getElementsByClassName('preloaderbutton')[0].style.opacity="1";
+		//setTimeout(Interface(board),3000);
+	},
+}
+var UNASSIGNED=0;
+var N=9;
+function CheckRow(board,row,value){
+	for(var i=0;i<board[row].length;i++){
+		if(board[row][i]===value)
+			return false;
+	}
+	return true;
+}
+function CheckColumn(board,column,value){
+	for(var i=0;i<board.length;i++){
+		if(board[i][column]===value)
+			return false;
+	}
+	return true;
+}
+function checkSquare(board, row, column, value){
+    boxRow = Math.floor(row / 3) * 3;
+    boxCol = Math.floor(column / 3) * 3;
+    
+    for (var r = 0; r < 3; r++){
+        for (var c = 0; c < 3; c++){
+            if (board[boxRow + r][boxCol + c] === value)
+                return false;
+        }
+    }
+
+    return true;
+}
+function nextEmptySpot(board) {
+    for (var i = 0; i < 9; i++) {
+        for (var j = 0; j < 9; j++) {
+            if (board[i][j] === 0) 
+                return [i, j];
+        }
+    }
+    return [-1, -1];
+}
+function isGiven(id){
+	if(document.getElementById(id).classList.contains("filled")===true)
+		return false;
+	return true;
+}
+function isSafe(board,row,column,value){
+	if(CheckRow(board,row,value)&&CheckColumn(board,column,value)&&checkSquare(board,row,column,value)&&isGiven(row+""+column))
+		return true;
+	return false;
+}
+function initialfill(id,value){
+	document.getElementById(id).classList.add("filled");
+	document.getElementById(id).innerHTML=value;
+	isGiven(id);
+}
+function fillBox(id,value){
+	if (document.getElementsByClassName("current")[0]!=undefined){
+		document.getElementsByClassName("current")[0].classList.remove("current");
+	}
+	document.getElementById(id).classList.add("current");
+	document.getElementById(id).innerHTML=value;
+	if (id==='88'){
+		document.getElementsByClassName("current")[0].classList.remove("current");
+	}
+}
+const sleep = ms => new Promise(resolve => setTimeout(() => resolve(), ms))
+async function solve(board) {  
+    let emptySpot = nextEmptySpot(board);
+    let row = emptySpot[0];
+    let col = emptySpot[1];
+
+    // there is no more empty spots
+    if (row === -1){
+        return board;
+    }
+
+    for(let num = 1; num<=9; num++){
+        if (isSafe(board, row, col, num)){
+            board[row][col] = num;
+            fillBox(row+""+col,num);
+            await sleep(100);
+            await solve(board);
+        }
+    }
+
+    if (nextEmptySpot(board)[0] !== -1){
+        board[row][col] = 0;
+    }
+
+    return board;
+}
+function Interface(){
+    board=solve(board);
+}
+function RandomNumberGenerator(num){
+	return Math.floor(Math.random()*(num+1));
+}
+var Game=[
+[[0,0,4,3,0,0,2,0,9],[0,0,5,0,0,9,0,0,1],[0,7,0,0,6,0,0,4,3],[0,0,6,0,0,2,0,8,7],[1,9,0,0,0,7,4,0,0],[0,5,0,0,8,3,0,0,0],[6,0,0,0,0,0,1,0,5],[0,0,3,5,0,8,6,9,0],[0,4,2,9,1,0,3,0,0]],
+[[0,4,0,1,0,0,0,5,0],[1,0,7,0,0,3,9,6,0],[5,2,0,0,0,8,0,0,0],[0,0,0,0,0,0,0,1,7],[0,0,0,9,0,6,8,0,0],[8,0,3,0,5,0,6,2,0],[0,9,0,0,6,0,5,4,3],[6,0,0,0,8,0,7,0,0],[2,5,0,0,9,7,1,0,0]],
+[[0, 2, 6, 0, 0, 0, 8, 1, 0],[3, 0, 0, 7, 0, 8, 0, 0, 6],[4, 0, 0, 0, 5, 0, 0, 0, 7],[0, 5, 0, 1, 0, 7, 0, 9, 0],[0, 0, 3, 9, 0, 5, 1, 0, 0],[0, 4, 0, 3, 0, 2, 0, 5, 0],[1, 0, 0, 0, 3, 0, 0, 0, 2],[5, 0, 0, 2, 0, 4, 0, 0, 9],[0, 3, 8, 0, 0, 0, 4, 6, 0]],
+[[6,0,0,1,2,0,3,8,4],[0,0,8,4,5,9,0,7,2],[0,0,0,0,0,6,0,0,5],[0,0,0,2,6,4,0,3,0],[0,7,0,0,8,0,0,0,6],[9,4,0,0,0,3,0,0,0],[3,1,0,0,0,0,0,5,0],[0,8,9,7,0,0,0,0,0],[5,0,2,0,0,0,1,9,0]],
+[[4,9,7,2,0,0,0,0,0],[1,0,0,4,0,0,0,0,5],[0,0,0,0,1,6,0,9,8],[6,2,0,3,0,0,0,4,0],[3,0,0,9,0,0,0,0,0],[0,0,1,0,7,2,6,0,0],[0,0,2,0,0,5,8,7,0],[0,0,0,6,0,0,0,0,4],[5,3,0,0,9,7,0,6,1]],
+//[[0,0,5,9,1,0,3,0,8],[0,0,9,4,0,3,0,6,0],[0,2,7,5,0,0,1,0,0],[0,3,0,0,0,0,2,0],[1,0,0,0,8,2,0,0,0],[7,0,0,6,0,0,7,0,0],[4,0,0,0,0,8,0,0,0],[0,6,4,0,1,5,0,7,0],[0,8,9,0,0,0,0,4,2,0]],
+[[1,0,0,0,0,5,0,0,7],[3,8,0,9,0,0,0,0,0],[6,0,0,0,0,0,4,8,0],[8,2,0,0,0,1,0,7,5],[0,4,0,7,6,0,0,2,0],[0,6,9,0,0,2,0,0,1],[0,0,5,0,3,9,0,0,4],[0,0,0,0,2,0,1,0,0],[0,0,0,0,4,6,3,5,2]],
+[[0,0,9,0,6,5,4,3,0],[0,0,7,0,0,0,8,0,0],[6,0,0,1,0,8,0,2,0],[0,0,3,0,9,0,0,0,2],[5,0,1,4,0,3,9,6,0],[8,0,4,0,0,0,1,0,0],[0,3,0,5,0,9,0,0,7],[0,5,6,0,8,0,0,0,0],[0,7,0,2,4,0,0,9,0]],
+[[0,0,0,0,0,0,6,5,7],[7,0,2,4,0,0,1,0,0],[3,5,0,0,0,6,0,0,0],[5,0,0,0,2,0,0,0,9],[2,1,0,3,0,0,5,0,0],[0,4,7,1,0,9,0,0,8],[0,0,8,7,6,0,0,9,0],[9,0,0,5,0,2,0,3,0],[0,3,0,0,1,8,2,0,6]],
+[[5,0,3,0,7,0,1,9,0],[0,0,0,0,0,6,7,5,0],[0,4,7,1,9,0,6,0,0],[4,0,0,0,3,8,0,0,0],[9,5,0,2,0,0,3,0,0],[0,0,0,0,1,0,0,7,2],[0,0,0,8,0,4,0,0,1],[3,0,0,0,0,1,8,6,0],[0,8,6,7,2,0,0,0,5]],
+//[[0,6,0,7,2,0,9,0,8],[0,8,4,0,0,3,0,0,1],[7,0,0,1,0,0,0,6,5],[9,0,0,0,0,8,0,0,0],[0,7,1,0,6,0,0,0,0],[0,0,0,2,0,0,7,0,6],[0,3,0,0,4,9,8,0,0],[2,1,5,0,0,0,0,9,0]],
+[[0,0,4,0,8,3,0,0,2],[0,5,1,0,0,4,3,0,0],[0,0,0,0,9,6,7,1,0],[1,2,0,8,0,0,0,0,6],[0,4,0,0,0,0,5,0,0],[8,3,0,6,0,7,9,0,0],[0,6,0,3,0,9,0,4,0],[0,0,7,0,0,0,2,0,5],[0,9,0,0,5,0,8,0,3]],
+[[0,0,0,0,6,0,2,8,0],[7,0,9,0,0,1,0,0,0],[8,6,0,3,2,0,0,7,4],[9,0,0,0,4,0,5,1,0],[0,0,7,1,9,0,3,4,0],[0,0,3,0,0,6,0,0,2],[0,0,2,9,7,0,0,0,0],[3,0,0,8,0,0,9,0,5],[5,0,0,0,0,0,0,2,1]]
+]
+
+function GenerateProblem(){
+	var board = Game[RandomNumberGenerator(Game.length-1)];
+    for(var i=0;i<board.length;i++){
+    	for(var j=0;j<board[i].length;j++){
+    		if(board[i][j]!=0){
+    			initialfill(i+""+j,board[i][j]);
+    		}
+    	}
+    }
+    return board;
+}
+setTimeout(function(){
+	Main.setup();
+},2000);
+document.getElementsByClassName("preloaderbutton")[0].addEventListener("click",function(){
+	document.getElementById("cont1").style.display="none";
+	document.getElementsByClassName("sudoku_body")[0].style.border="3px solid #588b8b";
+	document.getElementsByClassName("sudoku_body")[0].style.width="549px";
+	document.getElementsByClassName("sudoku_body")[0].style.height="549px";
+	setTimeout(function(){
+		var loop=document.getElementsByClassName("block");
+		for(var i=0;i<loop.length;i++){
+			loop[i].style.opacity=1;
+		}
+	},1000);
+	setTimeout(function(){
+		var loop=document.getElementsByClassName("block_row");
+		for(var i=0;i<loop.length;i++){
+			loop[i].style.opacity=1;
+		}
+	},2000);
+});
+function Reset(id){
+	document.getElementById(id).innerHTML="";
+	if(document.getElementById(id).classList.contains("filled")===true)
+		document.getElementById(id).classList.remove("filled");
+
+}
+
+document.getElementsByClassName("Generatesudoku")[0].addEventListener("click",function(){
+	this.disabled=true;
+	this.innerHTML="generating...";
+	this.style.opacity=0.5;
+	var board1;
+	do{
+		board1=Game[RandomNumberGenerator(Game.length-1)];
+	}while(board===board1);
+	board=board1;
+	console.log(board);
+    for(var i=0;i<board.length;i++){
+    	for(var j=0;j<board[i].length;j++){
+    		Reset(i+""+j);
+    		if(board[i][j]!=0){
+    			initialfill(i+""+j,board[i][j]);
+    		}
+    	}
+    }
+    this.innerHTML="Generate another problem";
+    this.style.opacity=1;
+    this.disabled=false;
+});
+var board=GenerateProblem();
+</script>
+<script type="text/javascript">
+/*function SudokuRow(box,row,value){
+	for(var j=0;j<9;j++)
+		if(box[row][j]==value)return false;
+	return true;
+}
+function SudokuColumn(box,column,value){
+	for(var i=0;i<9;i++)
+		if(box[i][column]==value)return false;
+	return true;
+}
+function SudokuBox(box,row,column,value){
+	for(var i=0;i<3;i++)
+		for(var j=0;j<3;j++)
+			if(box[row+i][column+j]==value)
+				return false;
+	return true;
+}
+function SudokuSafe(box,row,column,value){
+	return (SudokuRow(box,row,value)&&SudokuColumn(box,column,value)&&SudokuBox(box,row-row%3,column-column%3,value));
+}
+function RandomNumberGenerator(num){
+	return Math.floor(Math.random()*(num+1));
+}
+function CreateSudoku(){
+	var size=9;
+	var sqrt=3;
+	var box=[[],[],[],[],[],[],[],[],[]];
+	var num;
+	for(var i=0;i<size;i++)
+		for(var j=0;j<size;j++){
+			do{
+				num=RandomNumberGenerator(size);
+			}while(!SudokuColumn(box,i,j,num));
+			box[i][j]=num;
+			console.log(box[i][j]);
+		}
+}
+CreateSudoku();*/
+
+</script>
+</body>
+</html>
